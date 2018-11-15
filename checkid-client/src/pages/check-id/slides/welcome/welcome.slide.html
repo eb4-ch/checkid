@@ -1,0 +1,8 @@
+<img [src]="image" class="slide-image" />
+<h2 class="slide-title" [innerHTML]="title"></h2>
+<p [innerHTML]="description"></p>
+
+<button ion-button icon-end large clear (click)="slideNext()">
+    {{ button }}
+    <ion-icon name="arrow-forward"></ion-icon>
+</button>

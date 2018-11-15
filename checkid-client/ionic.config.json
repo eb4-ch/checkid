@@ -1,0 +1,7 @@
+{
+  "name": "checkid-client",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "ionic-angular"
+}
