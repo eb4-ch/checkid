@@ -5,6 +5,5 @@ export declare class AppController {
     private readonly checkIdService;
     constructor(appService: AppService, checkIdService: CheckIdService);
     root(): string;
-    test(): string;
-    upload(files: any): Promise<any>;
+    upload(res: any, files: any): Promise<void>;
 }

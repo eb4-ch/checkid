@@ -9,7 +9,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
 let AppService = class AppService {
     root() {
-        return 'Hello World!';
+        return 'Welcome to the check id API!';
     }
 };
 AppService = __decorate([

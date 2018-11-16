@@ -31,14 +31,10 @@ let AppController = class AppController {
     root() {
         return this.appService.root();
     }
-    test() {
-        this.checkIdService.detect();
-        return 'Made the test, homey!';
-    }
-    upload(files) {
+    upload(res, files) {
         return __awaiter(this, void 0, void 0, function* () {
             if (files.length === 2) {
-                return this.checkIdService.detectFaces(files.map(file => file.buffer));
+                return this.checkIdService.detectFaces(files.map(file => file.buffer), res);
             }
         });
     }
@@ -50,17 +46,11 @@ __decorate([
     __metadata("design:returntype", String)
 ], AppController.prototype, "root", null);
 __decorate([
-    common_1.Get('test'),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
-], AppController.prototype, "test", null);
-__decorate([
     common_1.Post('upload'),
     common_1.UseInterceptors(common_1.FilesInterceptor('files[]')),
-    __param(0, common_1.UploadedFiles()),
+    __param(0, common_1.Res()), __param(1, common_1.UploadedFiles()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "upload", null);
 AppController = __decorate([

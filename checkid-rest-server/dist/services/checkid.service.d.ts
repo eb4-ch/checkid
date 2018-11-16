@@ -2,6 +2,5 @@
 export declare class CheckIdService {
     private awsParameters;
     private rekognition;
-    detectFaces(images: Array<Buffer>): Promise<any>;
-    detect(): Promise<any>;
+    detectFaces(images: Array<Buffer>, response: any): Promise<void>;
 }

@@ -16,18 +16,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
 const Rekognition = require("node-rekognition");
-const fs = require("fs");
 let CheckIdService = class CheckIdService {
     constructor() {
         this.awsParameters = {
-            accessKeyId: 'AKIAIBTYSF3A4QXVP7QA',
-            secretAccessKey: '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',
+            accessKeyId: 'AKIAIZ37ZRDONPZ3OPRA',
+            secretAccessKey: '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',
             region: 'eu-west-1',
             bucket: 'checkid',
         };
         this.rekognition = new Rekognition(this.awsParameters);
     }
-    detectFaces(images) {
+    detectFaces(images, response) {
         return __awaiter(this, void 0, void 0, function* () {
             if (images && images.length === 2) {
                 const idImage = yield this.rekognition.detectFaces(images[0])
@@ -35,37 +34,26 @@ let CheckIdService = class CheckIdService {
                 if (idImage.FaceDetails && idImage.FaceDetails.length === 1) {
                     const selfieImage = yield this.rekognition.detectFaces(images[1]);
                     if (selfieImage.FaceDetails !== undefined && selfieImage.FaceDetails.length === 1) {
-                        const response = yield this.rekognition.compareFaces(images[0], images[1]);
-                        return response;
+                        const result = yield this.rekognition.compareFaces(images[0], images[1]);
+                        response.status(common_1.HttpStatus.OK).json({
+                            matched: result.FaceMatches.length > 0,
+                            confidence: result.SourceImageFace.Confidence,
+                        });
                     }
                     else {
-                        throw new Error('There are more faces than one on either pciture.');
+                        response.status(common_1.HttpStatus.FORBIDDEN)
+                            .send('There are more faces than one on either picture.');
                     }
                 }
                 else {
-                    throw new Error('Id image not have human face or it is undefined');
+                    response.status(common_1.HttpStatus.CONFLICT)
+                        .send('Id image not have human face or it is undefined');
                 }
             }
             else {
-                throw new Error('First image not have human face or it is undefined');
+                response.status(common_1.HttpStatus.CONFLICT)
+                    .send('First image not have human face or it is undefined');
             }
-        });
-    }
-    detect() {
-        return __awaiter(this, void 0, void 0, function* () {
-            let u = {};
-            fs.readFile('./src/images/the-26-coolest-women-in-uk-tech.jpg', (error, data) => __awaiter(this, void 0, void 0, function* () {
-                if (error)
-                    throw error;
-                try {
-                    u = yield this.rekognition.detectFaces(data);
-                }
-                catch (e) {
-                    throw e;
-                }
-                return u;
-            }));
-            return undefined;
         });
     }
 };

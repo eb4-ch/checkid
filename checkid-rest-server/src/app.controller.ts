@@ -1,4 +1,4 @@
-import { Get, Controller, Post, Body, FileInterceptor, UseInterceptors, UploadedFile, FilesInterceptor, UploadedFiles } from '@nestjs/common';
+import { Get, Controller, Post, Body, FileInterceptor, UseInterceptors, UploadedFile, FilesInterceptor, UploadedFiles, Res } from '@nestjs/common';
 import { AppService } from './services/app.service';
 import { CheckIdService } from './services/checkid.service';
 
@@ -14,17 +14,11 @@ export class AppController {
     return this.appService.root();
   }
 
-  @Get('test')
-  test() {
-    this.checkIdService.detect();
-    return 'Made the test, homey!';
-  }
-
   @Post('upload')
   @UseInterceptors(FilesInterceptor('files[]'))
-  async upload(@UploadedFiles() files) {
+  async upload(@Res() res, @UploadedFiles() files) {
     if (files.length === 2) {
-      return this.checkIdService.detectFaces(files.map(file => file.buffer));
+      return this.checkIdService.detectFaces(files.map(file => file.buffer), res);
     }
   }
 }

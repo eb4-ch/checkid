@@ -1,6 +1,10 @@
 <ion-header no-shadow>
   <ion-navbar>
-    <ion-title>Check ID App</ion-title>
+
+    <ion-title>
+      <img src="./assets/imgs/in-app-logo.png" width="28px" style="display:inline-block" />
+      Check ID App
+    </ion-title>
     <ion-buttons end>
       <button ion-button (click)="reset()" color="primary">Reset</button>
     </ion-buttons>
@@ -8,7 +12,7 @@
 </ion-header>
 
 <ion-content no-bounce>
-  <ion-slides pager="true" dir="{{dir}}" >
+  <ion-slides pager="true" dir="{{dir}}">
     <ion-slide>
       <welcome-slide [isHuman]="false"></welcome-slide>
     </ion-slide>
