@@ -4,6 +4,8 @@ import { HttpClient, HttpRequest } from '@angular/common/http';
 import { jsonpCallbackContext } from '@angular/common/http/src/module';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { map } from 'rxjs/operator/map';
+import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
 
 @Component({
     selector: 'welcome-slide',
@@ -36,7 +38,74 @@ export class WelcomeSlide {
     }
 
     slideNext() {
-        this.slideService.slides.slideNext();
+        this.slideService.slide();
         setTimeout(() => this.slideService.startCamera(this.isHuman), 600);
+    }
+
+    upload(inputElement: HTMLInputElement) {
+        if (inputElement && inputElement.files) {
+            // const b64 = this.getBase64(inputElement.files.item(0));
+            // this.getBase64(inputElement.files.item(0)).subscribe(b64 => {
+                const u = new FormData();
+                for(let i = 0; i < inputElement.files.length; i++) {
+                    const file = inputElement.files.item(i);
+                    u.append('files[]', file, file.name)
+                }
+                this.http.post('http://localhost:3000/upload', u).subscribe(x => {
+                    const u = '';
+                });
+            // });
+            // const buffer = this.base64ToArrayBuffer(b64)
+            // const files =
+            // this.callEndpoint(this.filesToFormData([inputElement.files.item(0)])).subscribe(x => {
+            //     const u = '';
+            // });
+        }
+        // this.loadingIndicator.showWhile(
+        //         this.http.request(this.generateUploadRequest(
+        //             this.apiUrlProvider.getApiUrl(`/api/DozAnlassBewertung(${this.getAnlassId()})/Service.UploadBewertung`), file)).pipe(last()))
+        //         .subscribe(() => {
+        //             const translations =
+        //                 this.translateService.instant(['teacher.grade.successfully-uploaded-title', 'teacher.grade.successfully-uploaded']);
+        //             if (translations) {
+        //                 this.notifications.success(translations['teacher.grade.successfully-uploaded-title'],
+        //                     translations['teacher.grade.successfully-uploaded']);
+        //             }
+        //         });
+        // }
+        // this.resetFileInputElement(inputElement);
+    }
+
+    private base64ToArrayBuffer(base64): ArrayBuffer {
+        var binary_string = window.atob(base64);
+        var len = binary_string.length;
+        var bytes = new Uint8Array(len);
+        for (var i = 0; i < len; i++) {
+            bytes[i] = binary_string.charCodeAt(i);
+        }
+        return bytes.buffer;
+    }
+
+    private getBase64(file): Observable<string> {
+        const source = new Subject<string>();
+        var reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function () {
+            source.next(reader.result + '');
+        };
+        reader.onerror = function (error) {
+            console.log('Error: ', error);
+        };
+        return source.asObservable();
+    }
+
+    private callEndpoint(formData: FormData): Observable<Object> {
+        return this.http.post('http://localhost:3003/upload', formData);
+    }
+
+    filesToFormData(files: Array<File>): FormData {
+        const result = new FormData();
+        files.forEach(file => result.append('uploads[]', file, file.name));
+        return result;
     }
 }
