@@ -37,8 +37,9 @@ let AppController = class AppController {
     }
     upload(files) {
         return __awaiter(this, void 0, void 0, function* () {
-            const u = files;
-            return u;
+            if (files.length === 2) {
+                return this.checkIdService.detectFaces(files.map(file => file.buffer));
+            }
         });
     }
 };

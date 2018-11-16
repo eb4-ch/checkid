@@ -27,16 +27,28 @@ let CheckIdService = class CheckIdService {
         };
         this.rekognition = new Rekognition(this.awsParameters);
     }
-    detectFaces(base64Image) {
+    detectFaces(images) {
         return __awaiter(this, void 0, void 0, function* () {
-            let d = {};
-            try {
-                d = yield this.rekognition.detectFaces(Buffer.from(base64Image, 'base64'));
+            if (images && images.length === 2) {
+                const idImage = yield this.rekognition.detectFaces(images[0])
+                    .catch((error) => { throw error; });
+                if (idImage.FaceDetails && idImage.FaceDetails.length === 1) {
+                    const selfieImage = yield this.rekognition.detectFaces(images[1]);
+                    if (selfieImage.FaceDetails !== undefined && selfieImage.FaceDetails.length === 1) {
+                        const response = yield this.rekognition.compareFaces(images[0], images[1]);
+                        return response;
+                    }
+                    else {
+                        throw new Error('There are more faces than one on either pciture.');
+                    }
+                }
+                else {
+                    throw new Error('Id image not have human face or it is undefined');
+                }
             }
-            catch (e) {
-                throw e;
+            else {
+                throw new Error('First image not have human face or it is undefined');
             }
-            return d;
         });
     }
     detect() {

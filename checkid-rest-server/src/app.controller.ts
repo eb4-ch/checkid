@@ -23,8 +23,8 @@ export class AppController {
   @Post('upload')
   @UseInterceptors(FilesInterceptor('files[]'))
   async upload(@UploadedFiles() files) {
-    // const i = await this.checkIdService.detectFaces(base64.file);
-    const u = files;
-    return u;
+    if (files.length === 2) {
+      return this.checkIdService.detectFaces(files.map(file => file.buffer));
+    }
   }
 }
