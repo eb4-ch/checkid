@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
-import { Config, Nav, Platform } from 'ionic-angular';
+import { Nav, Platform } from 'ionic-angular';
 
 import { FirstRunPage } from '../pages';
 
@@ -19,7 +19,6 @@ export class CheckIdApp {
 
   constructor(
     platform: Platform,
-    private config: Config,
     private statusBar: StatusBar,
     private splashScreen: SplashScreen
   ) {
