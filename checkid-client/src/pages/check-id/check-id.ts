@@ -17,11 +17,18 @@ export interface Slide {
 export class CheckIdPage {
   @ViewChild(Slides) slides: Slides;
 
+  isResetVisible = false;
+
   constructor(private slideService: SlideService) {
   }
 
   ngOnInit() {
     this.slideService.slides = this.slides;
+    this.slideService.slides.lockSwipes(true);
+  }
+
+  reset() {
+    this.slideService.reset();
   }
 
 }
