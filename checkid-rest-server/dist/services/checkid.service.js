@@ -16,34 +16,28 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
 const Rekognition = require("node-rekognition");
-const fs = require("fs");
 let CheckIdService = class CheckIdService {
     constructor() {
         this.awsParameters = {
-            accessKeyId: 'AKIAIBTYSF3A4QXVP7QA',
-            secretAccessKey: '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',
+            accessKeyId: 'AKIAIYYXXURPHPOTXQXQ',
+            secretAccessKey: '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',
             region: 'eu-west-1',
-            bucket: 'checkid',
+            bucket: 'idcheck',
         };
         this.rekognition = new Rekognition(this.awsParameters);
     }
     detectFaces(images) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (images && images.length === 2) {
-                const idImage = yield this.rekognition.detectFaces(images[0])
-                    .catch((error) => { throw error; });
-                if (idImage.FaceDetails && idImage.FaceDetails.length === 1) {
-                    const selfieImage = yield this.rekognition.detectFaces(images[1]);
-                    if (selfieImage.FaceDetails !== undefined && selfieImage.FaceDetails.length === 1) {
+            if (images) {
+                const idImageText = yield this.rekognition.detectLabels(images[0]);
+                if (this.isIdCard(idImageText)) {
+                    const selfieImageText = yield this.rekognition.detectLabels(images[1]);
+                    if (selfieImageText.Labels.any(x => {
+                        ['Face', 'Human'].indexOf(x.Name) > -1 && x.Confidence > 50 && ['People'].indexOf(x.Name) <= -1;
+                    }) && selfieImageText.Labels.any(y => y.Name === 'Labels')) {
                         const response = yield this.rekognition.compareFaces(images[0], images[1]);
                         return response;
                     }
-                    else {
-                        throw new Error('There are more faces than one on either pciture.');
-                    }
-                }
-                else {
-                    throw new Error('Id image not have human face or it is undefined');
                 }
             }
             else {
@@ -51,22 +45,9 @@ let CheckIdService = class CheckIdService {
             }
         });
     }
-    detect() {
-        return __awaiter(this, void 0, void 0, function* () {
-            let u = {};
-            fs.readFile('./src/images/the-26-coolest-women-in-uk-tech.jpg', (error, data) => __awaiter(this, void 0, void 0, function* () {
-                if (error)
-                    throw error;
-                try {
-                    u = yield this.rekognition.detectFaces(data);
-                }
-                catch (e) {
-                    throw e;
-                }
-                return u;
-            }));
-            return undefined;
-        });
+    isIdCard(awsObject) {
+        return awsObject.Labels.any(x => ['Id Cards', 'Document', 'Passport'].indexOf(x.Name) > -1 && x.Confidence > 50) &&
+            awsObject.Labels.any(y => y.Name === 'Face');
     }
 };
 CheckIdService = __decorate([

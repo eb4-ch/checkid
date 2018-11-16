@@ -32,14 +32,11 @@ let AppController = class AppController {
         return this.appService.root();
     }
     test() {
-        this.checkIdService.detect();
         return 'Made the test, homey!';
     }
     upload(files) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (files.length === 2) {
-                return this.checkIdService.detectFaces(files.map(file => file.buffer));
-            }
+            return this.checkIdService.detectFaces(files.map(file => file.buffer));
         });
     }
 };

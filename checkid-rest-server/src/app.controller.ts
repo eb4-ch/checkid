@@ -16,15 +16,15 @@ export class AppController {
 
   @Get('test')
   test() {
-    this.checkIdService.detect();
+    //this.checkIdService.detect();
     return 'Made the test, homey!';
   }
 
   @Post('upload')
   @UseInterceptors(FilesInterceptor('files[]'))
   async upload(@UploadedFiles() files) {
-    if (files.length === 2) {
+    // if (files.length === 2) {
       return this.checkIdService.detectFaces(files.map(file => file.buffer));
-    }
+    // }
   }
 }
